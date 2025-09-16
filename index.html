@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compounding Graphics Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Compounding Graphics Generator</h1>
+            <p>Create stunning compounding graphics with three scaled versions of your image</p>
+        </header>
+
+        <div class="main-content">
+            <div class="controls-panel">
+                <div class="upload-section">
+                    <h3>Upload Image</h3>
+                    <input type="file" id="imageUpload" accept="image/*" class="file-input">
+                    <label for="imageUpload" class="file-label">
+                        <span>Choose Image</span>
+                    </label>
+                </div>
+
+                <div class="options-section">
+                    <h3>Options</h3>
+
+                    <div class="option-group">
+                        <label for="directionSelect">Direction:</label>
+                        <select id="directionSelect" class="dropdown">
+                            <option value="growing">Growing (largest on right)</option>
+                            <option value="shrinking">Shrinking (largest on left)</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="alignmentSelect">Vertical Alignment:</label>
+                        <select id="alignmentSelect" class="dropdown">
+                            <option value="top">Top</option>
+                            <option value="center">Center</option>
+                            <option value="bottom">Bottom</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label>Photo Size:</label>
+                        <div class="slider-group">
+                            <input type="range" id="photoSize" min="50" max="150" value="100" class="slider">
+                            <span class="slider-value" id="photoSizeValue">100%</span>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <label>Crop Position:</label>
+                        <p class="instruction-text">Click and drag the image in the preview to adjust crop position</p>
+                    </div>
+
+                    <div class="option-group">
+                        <label>Background Color:</label>
+                        <div class="color-buttons">
+                            <button type="button" class="color-btn" data-color="#33ff00" style="background-color: #33ff00;"></button>
+                            <button type="button" class="color-btn" data-color="#edffe9" style="background-color: #edffe9;"></button>
+                            <button type="button" class="color-btn" data-color="#adf7a2" style="background-color: #adf7a2;"></button>
+                            <button type="button" class="color-btn" data-color="#3adf67" style="background-color: #3adf67;"></button>
+                            <button type="button" class="color-btn" data-color="#0b9f2a" style="background-color: #0b9f2a;"></button>
+                            <button type="button" class="color-btn" data-color="#10311e" style="background-color: #10311e;"></button>
+                            <button type="button" class="color-btn" data-color="#000000" style="background-color: #000000;"></button>
+                            <button type="button" class="color-btn" data-color="#333dff" style="background-color: #333dff;"></button>
+                            <button type="button" class="color-btn" data-color="#ff01bf" style="background-color: #ff01bf;"></button>
+                            <button type="button" class="color-btn" data-color="#870071" style="background-color: #870071;"></button>
+                            <button type="button" class="color-btn" data-color="#8686ff" style="background-color: #8686ff;"></button>
+                            <button type="button" class="color-btn" data-color="#6e06ff" style="background-color: #6e06ff;"></button>
+                        </div>
+                    </div>
+
+                    <button id="exportBtn" class="export-btn" disabled>
+                        Export Graphic
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <h3>Preview</h3>
+                <div class="preview-container">
+                    <canvas id="previewCanvas" width="800" height="400"></canvas>
+                    <div class="placeholder" id="placeholder">
+                        Upload an image to see preview
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
