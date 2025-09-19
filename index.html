@@ -44,7 +44,7 @@
                     </div>
 
                     <div class="option-group">
-                        <label>Photo Size:</label>
+                        <label>Photo Zoom:</label>
                         <div class="slider-group">
                             <input type="range" id="photoSize" min="50" max="150" value="100" class="slider">
                             <span class="slider-value" id="photoSizeValue">100%</span>
@@ -72,6 +72,11 @@
                             <button type="button" class="color-btn" data-color="#8686ff" style="background-color: #8686ff;"></button>
                             <button type="button" class="color-btn" data-color="#6e06ff" style="background-color: #6e06ff;"></button>
                         </div>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="filenameInput">Filename (optional):</label>
+                        <input type="text" id="filenameInput" placeholder="Enter filename (without extension)" class="filename-input">
                     </div>
 
                     <button id="exportBtn" class="export-btn" disabled>

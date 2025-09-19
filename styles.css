@@ -227,6 +227,7 @@ h3 {
     border-radius: 3px;
     background: #ddd;
     outline: none;
+    appearance: none;
     -webkit-appearance: none;
 }
 
@@ -302,6 +303,32 @@ h3 {
     outline: none;
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.filename-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    font-size: 0.95rem;
+    color: #333;
+    transition: all 0.2s ease;
+}
+
+.filename-input:hover {
+    border-color: #667eea;
+}
+
+.filename-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.filename-input::placeholder {
+    color: #999;
+    font-style: italic;
 }
 
 .export-btn {

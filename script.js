@@ -6,7 +6,8 @@ class CompoundingGraphicsGenerator {
         this.direction = 'growing';
         this.alignment = 'top';
         this.backgroundColor = '#33ff00';
-        this.photoSize = 100; // percentage
+        this.photoSize = 100; // percentage - controls dimensions of photo containers
+        this.photoZoom = 100; // percentage - controls how much of the source image to show
         this.cropX = 50; // percentage
         this.cropY = 50; // percentage
         this.isDragging = false;
@@ -65,8 +66,8 @@ class CompoundingGraphicsGenerator {
 
         if (photoSizeSlider) {
             photoSizeSlider.addEventListener('input', (e) => {
-                this.photoSize = parseInt(e.target.value);
-                document.getElementById('photoSizeValue').textContent = this.photoSize + '%';
+                this.photoZoom = parseInt(e.target.value);
+                document.getElementById('photoSizeValue').textContent = this.photoZoom + '%';
                 this.generatePreview();
             });
         }
@@ -130,9 +131,12 @@ class CompoundingGraphicsGenerator {
         const canvasHeight = 400;
         const canvasWidth = (canvasHeight * 3) / 2; // 3:2 ratio
 
-        // Calculate the size of the largest photo based on photoSize slider
+        // Largest image always touches top and bottom (full height)
         const largestHeight = canvasHeight;
-        const baseLargestWidth = (largestHeight * this.photoSize) / 100;
+
+        // Calculate width based on fitting all three scaled versions within canvas width
+        // Total width needed: 1x + 0.7x + 0.4x = 2.1x base width
+        const baseLargestWidth = canvasWidth / 2.1;
 
         const sizes = [
             {
@@ -140,21 +144,24 @@ class CompoundingGraphicsGenerator {
                 height: largestHeight,
                 scale: 1.0,
                 cropX: this.cropX,
-                cropY: this.cropY
+                cropY: this.cropY,
+                zoom: this.photoZoom
             },
             {
                 width: baseLargestWidth * 0.7,
                 height: largestHeight * 0.7,
                 scale: 0.7,
                 cropX: this.cropX,
-                cropY: this.cropY
+                cropY: this.cropY,
+                zoom: this.photoZoom
             },
             {
                 width: baseLargestWidth * 0.4,
                 height: largestHeight * 0.4,
                 scale: 0.4,
                 cropX: this.cropX,
-                cropY: this.cropY
+                cropY: this.cropY,
+                zoom: this.photoZoom
             }
         ];
 
@@ -254,7 +261,7 @@ class CompoundingGraphicsGenerator {
         this.generatePreview();
     }
 
-    handleMouseUp(e) {
+    handleMouseUp() {
         this.isDragging = false;
         this.canvas.style.cursor = 'grab';
     }
@@ -266,18 +273,24 @@ class CompoundingGraphicsGenerator {
 
         let sourceWidth, sourceHeight, sourceX, sourceY;
 
+        // Apply zoom factor: lower zoom percentage = more of the image visible (smaller crop area)
+        // zoom 100% = normal crop, zoom 50% = show more of the image (2x area), zoom 150% = show less (0.67x area)
+        const zoomFactor = size.zoom / 100;
+
         if (imageAspectRatio > displayAspectRatio) {
             // Image is wider than display area - crop horizontally
-            sourceHeight = image.height;
+            sourceHeight = image.height / zoomFactor;
             sourceWidth = sourceHeight * displayAspectRatio;
-            sourceY = 0;
+            // Center the crop area vertically, then apply cropY offset
+            sourceY = (image.height - sourceHeight) * (size.cropY / 100);
             // Use cropX to determine horizontal position
             sourceX = (image.width - sourceWidth) * (size.cropX / 100);
         } else {
             // Image is taller than display area - crop vertically
-            sourceWidth = image.width;
+            sourceWidth = image.width / zoomFactor;
             sourceHeight = sourceWidth / displayAspectRatio;
-            sourceX = 0;
+            // Center the crop area horizontally, then apply cropX offset
+            sourceX = (image.width - sourceWidth) * (size.cropX / 100);
             // Use cropY to determine vertical position
             sourceY = (image.height - sourceHeight) * (size.cropY / 100);
         }
@@ -285,6 +298,8 @@ class CompoundingGraphicsGenerator {
         // Ensure source coordinates are within image bounds
         sourceX = Math.max(0, Math.min(sourceX, image.width - sourceWidth));
         sourceY = Math.max(0, Math.min(sourceY, image.height - sourceHeight));
+        sourceWidth = Math.min(sourceWidth, image.width - sourceX);
+        sourceHeight = Math.min(sourceHeight, image.height - sourceY);
 
         ctx.drawImage(
             image,
@@ -312,8 +327,19 @@ class CompoundingGraphicsGenerator {
             this.drawCroppedImage(exportCtx, this.image, size);
         });
 
+        // Get custom filename or use default
+        const filenameInput = document.getElementById('filenameInput');
+        const customFilename = filenameInput ? filenameInput.value.trim() : '';
+
+        let filename;
+        if (customFilename) {
+            filename = `${customFilename}.png`;
+        } else {
+            filename = `compounding-graphic-${this.direction}-${this.alignment}.png`;
+        }
+
         const link = document.createElement('a');
-        link.download = `compounding-graphic-${this.direction}-${this.alignment}.png`;
+        link.download = filename;
         link.href = exportCanvas.toDataURL('image/png');
         link.click();
     }
